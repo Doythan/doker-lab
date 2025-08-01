@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  my_db:
+    build:
+      context: ./db
+    ports:
+      - "3306:3306"
+    restart: always
+    networks:
+      - backend_network
+
+  my_server:
+    build:
+      context: ./server
+    ports:
+      - "8080:80"
+    restart: always
+    depends_on:
+      - my_db
+    environment:
+      - RDS_HOSTNAME=my_db
+      - RDS_PORT=3306
+      - RDS_USERNAME=ssar
+      - RDS_PASSWORD=ssar1234
+      - RDS_DB_NAME=blogdb
+    networks:
+      - backend_network
+
+networks:
+  backend_network:
+    driver: bridge
+  frontend_network:
+    driver: bridge
